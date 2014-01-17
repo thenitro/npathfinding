@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>NPathfindingTests</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>com.adobe.flexbuilder.project.flexbuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>com.adobe.flexbuilder.project.actionscriptnature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>[source path] ndatas-source</name>
+			<type>2</type>
+			<location>D:/ndatas/source</location>
+		</link>
+		<link>
+			<name>[source path] npathfinding-source</name>
+			<type>2</type>
+			<location>D:/npathfinding/source</location>
+		</link>
+		<link>
+			<name>[source path] npooling-source</name>
+			<type>2</type>
+			<location>D:/npooling/source</location>
+		</link>
+	</linkedResources>
+</projectDescription>

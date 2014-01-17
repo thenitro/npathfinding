@@ -1,4 +1,6 @@
-package ngine.pathfinding {
+package npathfinding.base {
+	import flashx.undo.IUndoManager;
+	
 	import ncollections.grid.IGridObject;
 	
 	public final class Node implements IGridObject {
@@ -8,8 +10,11 @@ package ngine.pathfinding {
 		
 		public var parent:Node;
 		
-		private var _indexX:uint;
-		private var _indexY:uint;
+		public var opened:Boolean;
+		public var closed:Boolean;
+		
+		private var _indexX:int;
+		private var _indexY:int;
 		
 		private var _walkable:Boolean;
 		
@@ -17,11 +22,11 @@ package ngine.pathfinding {
 			
 		};
 		
-		public function get indexX():uint {
+		public function get indexX():int {
 			return _indexX;
 		};
 		
-		public function get indexY():uint {
+		public function get indexY():int {
 			return _indexY;
 		};
 		
@@ -37,7 +42,7 @@ package ngine.pathfinding {
 			return _walkable;
 		};
 		
-		public function updateIndex(pX:uint, pY:uint):void {
+		public function updateIndex(pX:int, pY:int):void {
 			_indexX = pX;
 			_indexY = pY;
 		};
@@ -50,6 +55,10 @@ package ngine.pathfinding {
 		};
 		
 		public function dispose():void {
+		};
+		
+		public function toString():String {
+			return '[object Node x=' + indexX + ', y=' + indexY + ', f=' + f + ']';
 		};
 	}
 }
