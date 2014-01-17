@@ -3,7 +3,7 @@ package npathfinding.sample {
 	import ngine.display.gridcontainer.GridContainer;
 	import ngine.math.Random;
 	
-	import npathfinding.Pathfinder;
+	import npathfinding.base.Pathfinder;
 	import npathfinding.algos.AStar;
 	import npathfinding.algos.JumpPointSearch;
 	import npathfinding.base.Node;
@@ -17,10 +17,10 @@ package npathfinding.sample {
 	import starling.events.TouchEvent;
 	
 	public final class PathfindingSample extends Sprite {
-		private static const NUM_X:int = 30;
-		private static const NUM_Y:int = 30;
+		private static const NUM_X:int = 20;
+		private static const NUM_Y:int = 20;
 		
-		private static const UNWALKABLES_PERCENT:int = 15;
+		private static const UNWALKABLES_PERCENT:int = 30;
 		
 		private static var _pathfinder:Pathfinder = Pathfinder.getInstance();
 		
@@ -37,7 +37,6 @@ package npathfinding.sample {
 		private function addedToStageEventHandler(pEvent:Event):void {
 			removeEventListener(Event.ADDED_TO_STAGE, addedToStageEventHandler);
 			
-			createGUI();
 			createGrid();
 			
 			createPathfinder();
@@ -45,11 +44,19 @@ package npathfinding.sample {
 			
 			createController();
 			
+			createGUI();
+			
 			addEventListener(TouchEvent.TOUCH, touchEventHandler);
 		};
 		
 		private function createGUI():void {
 			_gui = new PathfindingGUI();
+			_gui.addEventListener(PathfindingGUI.RANDOM_PATH, 
+								  randomPathEventHandler);
+			_gui.addEventListener(PathfindingGUI.RECALC_PATH, 
+								  recalcPathEventHandler);
+			
+			addChild(_gui);
 		};
 		
 		private function createGrid():void {
@@ -69,7 +76,7 @@ package npathfinding.sample {
 		};
 		
 		private function createPathfinder():void {
-			_pathfinder.init(NUM_X, NUM_Y, new JumpPointSearch());
+			_pathfinder.init(NUM_X, NUM_Y);
 		};
 		
 		private function generateUnwalkables():void {
@@ -88,10 +95,30 @@ package npathfinding.sample {
 		private function createController():void {
 			_controller = new PathfindingController();
 			_controller.init(_container);
+			_controller.addEventListener(PathfindingController.JPS_FINDED, 
+										 jpsFindedEventHandler);
+			_controller.addEventListener(PathfindingController.A_FINDED, 
+										 aFindedEventHandler);
 		};
 		
 		private function touchEventHandler(pEvent:TouchEvent):void {
 			_controller.track(pEvent.touches[0]);
+		};
+		
+		private function randomPathEventHandler(pEvent:Event):void {
+			_controller.generateRandomPath();
+		};
+		
+		private function recalcPathEventHandler(pEvent:Event):void {
+			_controller.findPath();
+		};
+		
+		private function jpsFindedEventHandler(pEvent:Event):void {
+			_gui.jpsFinded(pEvent.data as int);
+		};
+		
+		private function aFindedEventHandler(pEvent:Event):void {
+			_gui.aFinded(pEvent.data as int);
 		};
 	};
 }

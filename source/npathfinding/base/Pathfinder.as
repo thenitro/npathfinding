@@ -1,11 +1,7 @@
-package npathfinding {
+package npathfinding.base {
 	import ncollections.Set;
 	import ncollections.grid.Grid;
 	
-	import ngine.math.vectors.Vector2D;
-	
-	import npathfinding.base.Algorithm;
-	import npathfinding.base.Node;
 	
 	public final class Pathfinder {
 		private static const X:uint = 0;
@@ -20,7 +16,7 @@ package npathfinding {
 		
 		private var _freeNodes:Set;
 		private var _closedNodes:Set;
-		
+				
 		public function Pathfinder() {
 			if (!_allowInstance) {
 				throw new Error("Pathfinder: class is singleton! " +
@@ -50,9 +46,7 @@ package npathfinding {
 			return _closedNodes;
 		};
 		
-		public function init(pX:uint, pY:uint, pAlgorithm:Algorithm):void {
-			algorithm = pAlgorithm;
-			
+		public function init(pX:uint, pY:uint):void {
 			_pathgrid = new Grid();
 			
 			for (var i:uint = 0; i < pX; i++) {
@@ -136,6 +130,10 @@ package npathfinding {
 		};
 		
 		public function expandPath(pPath:Vector.<Node>):Vector.<Node> {
+			if (!pPath) {
+				return null;
+			}
+			
 			var result:Vector.<Node> = new Vector.<Node>();
 			
 			if (pPath.length < 2) {

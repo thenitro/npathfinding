@@ -24,7 +24,12 @@ package npathfinding.algos {
 			_grid      = pPathGrid;
 			_heuristic = pHeuristic;
 			
-			_open.length   = 0;
+			_open.length = 0;
+			
+			for each (var node:Node in _grid.items.list) {
+				node.closed = false;
+				node.opened = false;
+			}
 			
 			var id:Object;
 			
@@ -61,8 +66,6 @@ package npathfinding.algos {
 			var min:Function = Math.min;
 			var max:Function = Math.max;
 			
-			var iterations:uint = 0;
-			
 			while (node != _end) {
 				startX = max(0, node.indexX - 1);
 				startY = max(0, node.indexY - 1);
@@ -73,8 +76,6 @@ package npathfinding.algos {
 				for (i = startX; i <= endX; ++i) {
 					for (j = startY; j <= endY; ++j) {
 						test = _grid.take(i, j) as Node;
-						
-						iterations++;
 						
 						if (test == node || !test.walkable ||
 							!Node(_grid.take(node.indexX, test.indexY)).walkable ||
@@ -121,7 +122,6 @@ package npathfinding.algos {
 				node.closed = true;
 				
 				if (_open.length == 0) {
-					trace('AStart.search: Cannot find path!');
 					return false;
 				}
 				
@@ -131,8 +131,6 @@ package npathfinding.algos {
 			}
 			
 			buildPath();
-			
-			trace("AStar.search:", 'FINDED in', iterations, 'iterations');
 			
 			return true;
 		};

@@ -1,5 +1,6 @@
 package npathfinding.algos {
 	import flash.utils.Dictionary;
+	import flash.utils.getTimer;
 	
 	import ncollections.grid.Grid;
 	
@@ -22,12 +23,21 @@ package npathfinding.algos {
 		
 		override public function findPath(pPathGrid:Grid, pHeuristic:Function, 
 										  pStart:Node, pEnd:Node):Boolean {
+			var node:Node;
+			
 			_start = pStart;
 			_end   = pEnd;
 			
 			_grid = pPathGrid;
 			
 			_heuristic = pHeuristic;
+			
+			_open.length = 0;
+			
+			for each (node in _grid.items.list) {
+				node.closed = false;
+				node.opened = false;
+			}
 			
 			_start.g = 0;
 			_start.f = 0;
@@ -36,7 +46,7 @@ package npathfinding.algos {
 			_start.opened = true;
 			
 			while (_open.length) {				
-				var node:Node = _open.pop();
+				node = _open.pop();
 				
 				_start.closed = true;
 				
@@ -52,9 +62,11 @@ package npathfinding.algos {
 		};
 		
 		private function search(pNode:Node):void {
+			_path = null;
+			
 			var neighbors:Array = findNeighbors(pNode);
 			
-			for (var i:int = 0; i < neighbors.length; i++) {
+			for (var i:int = 0; i < neighbors.length; i++) {	
 				var neighbor:Node = neighbors[i] as Node;
 				var jumpNode:Node = jump(neighbor, pNode);
 				
@@ -62,18 +74,18 @@ package npathfinding.algos {
 					continue;
 				}
 				
-				var d:Number     = Heuristic.euclidean(_start, 
-													   _grid.take(Math.abs(jumpNode.indexX - pNode.indexX),
-																  Math.abs(jumpNode.indexY - pNode.indexY)) as Node,
+				var d:Number     = Heuristic.euclidean(pNode, 
+													   _grid.take(jumpNode.indexX,
+													              jumpNode.indexY) as Node, 
 													   straightCost, diagonalCost);
 				var nextG:Number = pNode.g + d;
 				
 				
 				if (!jumpNode.opened || nextG < jumpNode.g) {
 					jumpNode.g = nextG;
-					jumpNode.h = jumpNode.h || _heuristic(_start, 
-														  _grid.take(Math.abs(jumpNode.indexX - _end.indexX),
-														  			 Math.abs(jumpNode.indexY - _end.indexY)) as Node,
+					jumpNode.h = jumpNode.h || _heuristic( _grid.take(jumpNode.indexX,
+														              jumpNode.indexY) as Node, 
+														 _end,
 														  straightCost, diagonalCost);
 					jumpNode.f = jumpNode.g + jumpNode.h;
 					
@@ -104,9 +116,11 @@ package npathfinding.algos {
 			};
 			
 			var validateAndAdd:Function = function(pNodeA:Node):void {
-				if (pNodeA && pNodeA.walkable) {
-					result.push(pNodeA);
+				if (!pNodeA || !pNodeA.walkable) {
+					return;
 				}	
+				
+				result.push(pNodeA);
 			}
 			
 			if (pNode.parent) {
@@ -121,17 +135,17 @@ package npathfinding.algos {
 					
 					if (validate(pNode.indexX, pNode.indexY + dy) || 
 						validate(pNode.indexX + dx, pNode.indexY)) {
-						result.push(_grid.take(pNode.indexX + dx, pNode.indexY + dy));
+						result.push(_grid.take(pNode.indexX + dx, pNode.indexY + dy) as Node);
 					}
 					
 					if (!validate(pNode.indexX - dx, pNode.indexY) && 
 						validate(pNode.indexX, pNode.indexY + dy)) {
-						result.push(_grid.take(pNode.indexX - dx, pNode.indexY + dy));
+						result.push(_grid.take(pNode.indexX - dx, pNode.indexY + dy) as Node);
 					}						
 					
 					if (!validate(pNode.indexX, pNode.indexY - dy) && 
 						validate(pNode.indexX + dx, pNode.indexY)) {
-						result.push(_grid.take(pNode.indexX + dx, pNode.indexY - dy));
+						result.push(_grid.take(pNode.indexX + dx, pNode.indexY - dy) as Node);
 					}						
 				} else {
 					if (dx == 0) {

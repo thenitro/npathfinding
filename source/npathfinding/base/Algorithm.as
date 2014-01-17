@@ -6,7 +6,7 @@ package npathfinding.base {
 	
 	public class Algorithm {
 		public static const DEFAULT_STRAIGHT_COST:Number = 1.0;
-		public static const DEFAULT_DIAGONAL_COST:Number = 1.0;//Math.SQRT2;
+		public static const DEFAULT_DIAGONAL_COST:Number = Math.SQRT2;
 		
 		public var straightCost:Number = DEFAULT_STRAIGHT_COST;
 		public var diagonalCost:Number = DEFAULT_DIAGONAL_COST;

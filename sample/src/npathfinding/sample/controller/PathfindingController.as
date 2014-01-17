@@ -4,10 +4,11 @@ package npathfinding.sample.controller {
 	import ngine.display.gridcontainer.GridContainer;
 	import ngine.math.Random;
 	
-	import npathfinding.Pathfinder;
 	import npathfinding.algos.AStar;
+	import npathfinding.algos.JumpPointSearch;
 	import npathfinding.base.Heuristic;
 	import npathfinding.base.Node;
+	import npathfinding.base.Pathfinder;
 	import npathfinding.sample.view.VisualNode;
 	
 	import starling.animation.Tween;
@@ -16,13 +17,21 @@ package npathfinding.sample.controller {
 	import starling.events.Touch;
 	
 	public final class PathfindingController extends EventDispatcher {
+		public static const JPS_FINDED:String = 'jps_finded';
+		public static const A_FINDED:String   = 'a_finded';
+		
 		private static var _pathfinder:Pathfinder = Pathfinder.getInstance();
+		
+		private static var _jps:JumpPointSearch = new JumpPointSearch();
+		private static var _a:AStar             = new AStar();
 		
 		private var _container:GridContainer;
 		private var _prevNode:VisualNode;
 		
 		private var _start:Node;
 		private var _end:Node;
+		
+		private var _path:Vector.<Node>;
 		
 		public function PathfindingController() {
 			super();
@@ -33,8 +42,6 @@ package npathfinding.sample.controller {
 			
 			generateStart();
 			generateEnd();
-			
-			findPath();
 		};
 		
 		public function track(pTouch:Touch):void {
@@ -55,69 +62,26 @@ package npathfinding.sample.controller {
 			_prevNode = node;
 		};
 		
-		private function restoreNode():void {
-			if (_prevNode.indexX == _start.indexX && 
-				_prevNode.indexY == _start.indexY) {
-				_prevNode.color = VisualNode.START_COLOR;
-				
-				return;
-			}
+		public function generateRandomPath():void {
+			generateStart();
+			generateEnd();
 			
-			if (_prevNode.indexX == _end.indexX && 
-				_prevNode.indexY == _end.indexY) {
-				_prevNode.color = VisualNode.END_COLOR;
-				
-				return;
-			}
-			
-			_prevNode.color = _pathfinder.isWalkable(_prevNode.indexX, 
-													 _prevNode.indexY) ? VisualNode.OPEN_COLOR : VisualNode.CLOSED_COLOR;
-			
+			findPath();
 		};
 		
-		private function generateStart():void {
-			_start = Random.arrayElement(_pathfinder.freeNodes.list) as Node; 
+		public function findPath():void {
+			stopPathAnimation();
 			
-			var node:VisualNode = _container.take(_start.indexX, _start.indexY) as VisualNode;
-				node.color      = VisualNode.START_COLOR;
-		};
-		
-		private function generateEnd():void {
-			_end = Random.arrayElement(_pathfinder.freeNodes.list) as Node;
+			findA();
+			findJPS();
 			
-			var node:VisualNode = _container.take(_end.indexX, _end.indexY) as VisualNode;
-				node.color      = VisualNode.END_COLOR;
-		};
-		
-		private function findPath():void {
-			trace("PathfindingController.findPath()", _start);
-			
-			var start:uint = getTimer();
-			
-			var path:Vector.<Node> = _pathfinder.findPath(_start.indexX, _start.indexY,
-														  _end.indexX, _end.indexY, 
-														  Heuristic.diagonal);
-				//path = _pathfinder.expandPath(path);
-			
-			trace("PathfindingController.findPath() elapsed JPS: " + (getTimer() - start));
-			
-			start = getTimer();
-			
-			_pathfinder.algorithm = new AStar();
-			
-			var path2:Vector.<Node> = _pathfinder.findPath(_start.indexX, _start.indexY,
-														  _end.indexX, _end.indexY, 
-														  Heuristic.diagonal);
-			
-			trace("PathfindingController.findPath() elapsed A*: " + (getTimer() - start));
-			
-			if (!path) {
+			if (!_path) {
 				trace("PathfindingController.findPath() elapsed: NO PATH");
 				return;
 			}
 			
-			for (var i:int = 0; i < path.length; i++) {
-				var node:Node = path[i];
+			for (var i:int = 0; i < _path.length; i++) {
+				var node:Node = _path[i];
 				
 				if (node == _start || node == _end) {
 					continue;
@@ -134,9 +98,102 @@ package npathfinding.sample.controller {
 					
 				Starling.juggler.add(tween);
 			}
+		};
+		
+		private function stopPathAnimation():void {
+			Starling.juggler.purge();
 			
-			trace("PathfindingController.findPath()", path);
-			trace("PathfindingController.findPath()", _end);
+			for each (var node:Node in _path) {
+				if (node == _start || node == _end) {
+					continue;
+				}
+				
+				var visual:VisualNode = _container.take(node.indexX, node.indexY) as VisualNode;
+					visual.alpha = 1.0;
+					visual.color = VisualNode.OPEN_COLOR;
+			}
+			
+			_path = null;
+		};
+		
+		private function findJPS():void {
+			_pathfinder.algorithm = _jps;
+			
+			var start:uint = getTimer();
+			
+			for (var i:int = 0; i < 10; i++) {
+				_path = _pathfinder.findPath(_start.indexX, _start.indexY,
+															  _end.indexX, _end.indexY, 
+															  Heuristic.manhattan);
+			}
+			
+			
+			var elapsed:int = (getTimer() - start);
+			
+			_path = _pathfinder.expandPath(_path);
+			
+			dispatchEventWith(JPS_FINDED, false, elapsed);
+		};
+		
+		private function findA():void {
+			_pathfinder.algorithm = _a;
+			
+			var start:uint = getTimer();
+			for (var i:int = 0; i < 10; i++) {
+				var path:Vector.<Node> = _pathfinder.findPath(_start.indexX, _start.indexY,
+															  _end.indexX, _end.indexY, 
+															  Heuristic.manhattan);
+			}
+			
+			dispatchEventWith(A_FINDED, false, (getTimer() - start));
+		};
+		
+		private function restoreNode():void {
+			if (_prevNode.indexX == _start.indexX && 
+				_prevNode.indexY == _start.indexY) {
+				_prevNode.color = VisualNode.START_COLOR;
+				
+				return;
+			}
+			
+			if (_prevNode.indexX == _end.indexX && 
+				_prevNode.indexY == _end.indexY) {
+				_prevNode.color = VisualNode.END_COLOR;
+				
+				return;
+			}
+			
+			_prevNode.color = _pathfinder.isWalkable(_prevNode.indexX, 
+				_prevNode.indexY) ? VisualNode.OPEN_COLOR : VisualNode.CLOSED_COLOR;
+			
+		};
+		
+		private function generateStart():void {
+			var node:VisualNode;
+			
+			if (_start) {
+				node = _container.take(_start.indexX, _start.indexY) as VisualNode;
+				node.color = VisualNode.OPEN_COLOR;
+			}
+			
+			_start = Random.arrayElement(_pathfinder.freeNodes.list) as Node; 
+			
+			node = _container.take(_start.indexX, _start.indexY) as VisualNode;
+			node.color = VisualNode.START_COLOR;
+		};
+		
+		private function generateEnd():void {
+			var node:VisualNode;
+			
+			if (_end) {
+				node = _container.take(_end.indexX, _end.indexY) as VisualNode;
+				node.color = VisualNode.OPEN_COLOR;
+			}
+			
+			_end = Random.arrayElement(_pathfinder.freeNodes.list) as Node;
+			
+			node = _container.take(_end.indexX, _end.indexY) as VisualNode;
+			node.color = VisualNode.END_COLOR;
 		};
 	};
 }

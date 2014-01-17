@@ -16,6 +16,11 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>[source path] MinimalMobileTheme-source</name>
+			<type>2</type>
+			<location>D:/libs/feathers/themes/MinimalMobileTheme/source</location>
+		</link>
+		<link>
 			<name>[source path] feathers-source</name>
 			<type>2</type>
 			<location>D:/libs/feathers/source</location>
