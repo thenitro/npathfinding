@@ -5,7 +5,7 @@ package npathfinding.base {
 	
 	public final class Pathfinder {
 		private static const X:uint = 0;
-		private static const Y:uint = 0;
+		private static const Y:uint = 1;
 		
 		public var algorithm:Algorithm;
 		

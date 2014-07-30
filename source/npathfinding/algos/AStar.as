@@ -1,12 +1,10 @@
 package npathfinding.algos {
-	import flash.utils.Dictionary;
-	
-	import ncollections.grid.Grid;
-	
-	import npathfinding.base.Algorithm;
-	import npathfinding.base.Node;
-	
-	public final class AStar extends Algorithm {
+    import ncollections.grid.Grid;
+
+    import npathfinding.base.Algorithm;
+    import npathfinding.base.Node;
+
+    public final class AStar extends Algorithm {
 		private var _open:Array;
 		
 		public function AStar() {

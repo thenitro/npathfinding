@@ -1,9 +1,7 @@
 package npathfinding.base {
-	import flashx.undo.IUndoManager;
-	
-	import ncollections.grid.IGridObject;
-	
-	public final class Node implements IGridObject {
+    import ncollections.grid.IGridObject;
+
+    public final class Node implements IGridObject {
 		public var g:Number;
 		public var f:Number;
 		public var h:Number;
@@ -17,6 +15,8 @@ package npathfinding.base {
 		private var _indexY:int;
 		
 		private var _walkable:Boolean;
+
+        private var _disposed:Boolean;
 		
 		public function Node() {
 			
@@ -33,6 +33,10 @@ package npathfinding.base {
 		public function get reflection():Class {
 			return Node;
 		};
+
+        public function get disposed():Boolean {
+            return _disposed;
+        };
 		
 		public function set walkable(pValue:Boolean):void {
 			_walkable = pValue;
@@ -55,6 +59,7 @@ package npathfinding.base {
 		};
 		
 		public function dispose():void {
+            _disposed = true;
 		};
 		
 		public function toString():String {
