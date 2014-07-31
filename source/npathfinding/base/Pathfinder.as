@@ -95,40 +95,6 @@ package npathfinding.base {
 			return algorithm.path;
 		};
 		
-		public function reducePath(pTarget:Vector.<Node>):Vector.<Node> {
-			var result:Vector.<Node> = new Vector.<Node>();
-			
-			var currentSameValue:uint;
-			var lastSameValue:uint;
-			
-			var startNode:Node;
-			var node:Node;
-			var nextNode:Node;
-			
-			startNode = node = pTarget.shift();
-			
-			while (pTarget.length) {
-				nextNode = pTarget.shift();
-				
-				if (node.indexX == nextNode.indexX) {
-					currentSameValue = X;
-				} else {
-					currentSameValue = Y;
-				}
-				
-				if (currentSameValue != lastSameValue) {
-					if (node != startNode) result.push(node);
-				}
-				
-				node = nextNode;
-				lastSameValue = currentSameValue;
-			}
-			
-			result.push(node);
-			
-			return result;
-		};
-		
 		public function expandPath(pPath:Vector.<Node>):Vector.<Node> {
 			if (!pPath) {
 				return null;
