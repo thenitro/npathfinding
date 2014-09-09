@@ -71,8 +71,13 @@ package npathfinding.base {
 		};
 		
 		public function setWalkable(pIndexX:uint, pIndexY:uint):void {
-			var node:Node     = _pathgrid.take(pIndexX, pIndexY) as Node;			
-				node.walkable = true;
+			var node:Node     = _pathgrid.take(pIndexX, pIndexY) as Node;
+
+            if (!node) {
+                return;
+            }
+
+            node.walkable = true;
 				
 			_freeNodes.add(node);
 			_closedNodes.remove(node);
@@ -80,7 +85,12 @@ package npathfinding.base {
 		
 		public function setUnWalkable(pIndexX:uint, pIndexY:uint):void {
 			var node:Node     = _pathgrid.take(pIndexX, pIndexY) as Node;
-				node.walkable = false;
+
+            if (!node) {
+                return;
+            }
+
+            node.walkable = false;
 				
 			_freeNodes.remove(node);
 			_closedNodes.add(node);
