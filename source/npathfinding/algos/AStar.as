@@ -25,11 +25,13 @@ package npathfinding.algos {
 			_open.length = 0;
 			
 			for each (var node:Node in _grid.items.list) {
+                node.g = 0;
+                node.h = 0;
+                node.f = 0;
+
 				node.closed = false;
 				node.opened = false;
 			}
-			
-			var id:Object;
 			
 			_start = pStart;
 			_end   = pEnd;
