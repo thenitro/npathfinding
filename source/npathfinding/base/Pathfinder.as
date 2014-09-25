@@ -4,8 +4,8 @@ package npathfinding.base {
 	
 	
 	public final class Pathfinder {
-		private static const X:uint = 0;
-		private static const Y:uint = 1;
+		private static const X:int = 0;
+		private static const Y:int = 1;
 		
 		public var algorithm:Algorithm;
 		
@@ -46,11 +46,11 @@ package npathfinding.base {
 			return _closedNodes;
 		};
 		
-		public function init(pX:uint, pY:uint):void {
+		public function init(pX:int, pY:int):void {
 			_pathgrid = new Grid();
 			
-			for (var i:uint = 0; i < pX; i++) {
-				for (var j:uint = 0; j < pY; j++) {
+			for (var i:int = 0; i < pX; i++) {
+				for (var j:int = 0; j < pY; j++) {
 					var node:Node     = new Node();
 						node.walkable = true;
 						
@@ -59,8 +59,12 @@ package npathfinding.base {
 				}
 			}
 		};
+
+        public function takeNode(pX:int, pY:int):Node {
+            return _pathgrid.take(pX, pY) as Node;
+        };
 		
-		public function isWalkable(pIndexX:uint, pIndexY:uint):Boolean {
+		public function isWalkable(pIndexX:int, pIndexY:int):Boolean {
 			var node:Node = _pathgrid.take(pIndexX, pIndexY) as Node;
 			
 			if (!node) {
@@ -70,7 +74,7 @@ package npathfinding.base {
 			return node.walkable;
 		};
 		
-		public function setWalkable(pIndexX:uint, pIndexY:uint):void {
+		public function setWalkable(pIndexX:int, pIndexY:int):void {
 			var node:Node     = _pathgrid.take(pIndexX, pIndexY) as Node;
 
             if (!node) {
@@ -83,7 +87,7 @@ package npathfinding.base {
 			_closedNodes.remove(node);
 		};
 		
-		public function setUnWalkable(pIndexX:uint, pIndexY:uint):void {
+		public function setUnWalkable(pIndexX:int, pIndexY:int):void {
 			var node:Node     = _pathgrid.take(pIndexX, pIndexY) as Node;
 
             if (!node) {
@@ -96,8 +100,8 @@ package npathfinding.base {
 			_closedNodes.add(node);
 		};
 		
-		public function findPath(pStartX:uint, pStartY:uint, 
-								 pEndX:uint, pEndY:uint, 
+		public function findPath(pStartX:int, pStartY:int, 
+								 pEndX:int, pEndY:int, 
 								 pHeuristic:Function = null):Vector.<Node> {
 			if (algorithm.findPath(_pathgrid, pHeuristic,
 								   _pathgrid.take(pStartX, pStartY) as Node,
