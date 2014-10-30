@@ -88,7 +88,7 @@ package npathfinding.base {
 		};
 		
 		public function setUnWalkable(pIndexX:int, pIndexY:int):void {
-			var node:Node     = _pathgrid.take(pIndexX, pIndexY) as Node;
+			var node:Node = _pathgrid.take(pIndexX, pIndexY) as Node;
 
             if (!node) {
                 return;
