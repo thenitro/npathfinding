@@ -4,9 +4,6 @@ package npathfinding.base {
 	
 	
 	public final class Pathfinder {
-		private static const X:int = 0;
-		private static const Y:int = 1;
-		
 		public var algorithm:Algorithm;
 		
 		private static var _allowInstance:Boolean;
@@ -45,7 +42,23 @@ package npathfinding.base {
 		public function get closedNodes():Set {
 			return _closedNodes;
 		};
-		
+
+        public function get minX():int {
+            return _pathgrid.minX;
+        };
+
+        public function get minY():int {
+            return _pathgrid.minY;
+        };
+
+        public function get maxX():int {
+            return _pathgrid.maxX;
+        };
+
+        public function get maxY():int {
+            return _pathgrid.maxY;
+        };
+
 		public function init(pX:int, pY:int):void {
 			_pathgrid = new Grid();
 			
@@ -75,9 +88,10 @@ package npathfinding.base {
 		};
 		
 		public function setWalkable(pIndexX:int, pIndexY:int):void {
-			var node:Node     = _pathgrid.take(pIndexX, pIndexY) as Node;
+			var node:Node = _pathgrid.take(pIndexX, pIndexY) as Node;
 
             if (!node) {
+                node = _pathgrid.add(pIndexX, pIndexY, new Node(true)) as Node;
                 return;
             }
 
@@ -91,6 +105,7 @@ package npathfinding.base {
 			var node:Node = _pathgrid.take(pIndexX, pIndexY) as Node;
 
             if (!node) {
+                node = _pathgrid.add(pIndexX, pIndexY, new Node()) as Node;
                 return;
             }
 

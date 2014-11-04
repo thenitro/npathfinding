@@ -18,8 +18,8 @@ package npathfinding.base {
 
         private var _disposed:Boolean;
 		
-		public function Node() {
-			
+		public function Node(pWalkable:Boolean = false) {
+			_walkable = pWalkable;
 		};
 		
 		public function get indexX():int {
@@ -63,7 +63,7 @@ package npathfinding.base {
 		};
 		
 		public function toString():String {
-			return '[object Node x=' + indexX + ', y=' + indexY + ', f=' + f + ']';
+			return '[object Node x=' + indexX + ', y=' + indexY + ', f=' + f + ', walkable=' + walkable + ' ]';
 		};
 	}
 }

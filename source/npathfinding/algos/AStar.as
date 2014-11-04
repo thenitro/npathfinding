@@ -46,14 +46,14 @@ package npathfinding.algos {
 		private function search():Boolean {
 			var node:Node = _start;
 			
-			var startX:uint;
-			var startY:uint;
+			var startX:int;
+			var startY:int;
 			
-			var endX:uint;
-			var endY:uint;
+			var endX:int;
+			var endY:int;
 			
-			var i:uint;
-			var j:uint;
+			var i:int;
+			var j:int;
 			
 			var test:Node;
 			
@@ -65,13 +65,13 @@ package npathfinding.algos {
 			
 			var min:Function = Math.min;
 			var max:Function = Math.max;
-			
+
 			while (node != _end) {
-				startX = max(0, node.indexX - 1);
-				startY = max(0, node.indexY - 1);
+				startX = max(_grid.minX, node.indexX - 1);
+				startY = max(_grid.minY, node.indexY - 1);
 				
-				endX = min(_grid.sizeX - 1, node.indexX + 1);
-				endY = min(_grid.sizeY - 1, node.indexY + 1);
+				endX = min(_grid.maxX - 1, node.indexX + 1);
+				endY = min(_grid.maxY - 1, node.indexY + 1);
 				
 				for (i = startX; i <= endX; ++i) {
 					for (j = startY; j <= endY; ++j) {
